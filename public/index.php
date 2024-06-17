@@ -1,4 +1,6 @@
 <?php
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
 use App\Controllers;
 use Dotenv\Dotenv;
@@ -23,6 +25,10 @@ $afterMiddleware = function ($request, $handler) {
     ->withHeader('Access-Control-Allow-Origin', '*');
 };
 
+$app->get('/', function (Request $request, Response $response) {
+  $response->getBody()->write('Welcome to the Sapo plugin, designed by the payOS team!');
+  return $response;
+});
 $app->get('/get-status-order/{orderId}', Controllers\GetStatusOrder::class)->add($afterMiddleware);
 
 $app->post('/create-payment-link/{orderId}', Controllers\CreatePaymentLink::class)->add($afterMiddleware);
