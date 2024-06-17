@@ -66,7 +66,8 @@ class GetPaymentLink
     try {
       $queryParams = $request->getQueryParams();
       $redirectUri = $queryParams['redirect_uri'] ?? null;
-      if (empty($redirectUri)) {
+      $phone = $queryParams['phone'] ?? null;
+      if (empty($redirectUri) || empty($phone)) {
         $response->getBody()->write('INVALID DATA');
         return $response
           ->withStatus(400);
@@ -74,7 +75,7 @@ class GetPaymentLink
       $data = [
         "orderCode" => (int) $orderId,
         "amount" => (int) $sapoOrder["order"]['total_price'],
-        "description" => "Thanh toán đơn hàng",
+        "description" => "DH ". $phone,
         "returnUrl" => $redirectUri,
         "cancelUrl" => $redirectUri
       ];
