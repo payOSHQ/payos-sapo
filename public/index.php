@@ -29,9 +29,7 @@ $app->get('/', function (Request $request, Response $response) {
   $response->getBody()->write('Welcome to the Sapo plugin, designed by the payOS team!');
   return $response;
 });
-$app->get('/get-status-order/{orderId}', Controllers\GetStatusOrder::class)->add($afterMiddleware);
-
-$app->post('/create-payment-link/{orderId}', Controllers\CreatePaymentLink::class)->add($afterMiddleware);
+$app->get('/get-payment-link/{orderId}', Controllers\GetPaymentLink::class)->add($afterMiddleware);
 $app->post('/webhook-transaction', Controllers\WebhookTransaction::class)->add($afterMiddleware);
 
 

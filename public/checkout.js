@@ -127,21 +127,25 @@ document.addEventListener("DOMContentLoaded", async () => {
   };
 
   try {
-    const orderStatusResponse = await handleFetchData(`get-status-order/${orderId}`);
-    if (orderStatusResponse?.financial_status === "paid") {
+    const paymentLinkResponse = await handleFetchData(
+      `get-payment-link/${orderId}?redirect_uri=${window.location.origin}`
+    );
+    console.log(paymentLinkResponse);
+    if (paymentLinkResponse?.financial_status === "paid") {
       contentImporter.innerHTML = SUCCESS_UI;
       return;
     }
-    const paymentLink = await handleFetchData(`create-payment-link/${orderId}`, "POST", {
-      redirect_uri: window.location.origin,
-    });
-    const { checkout_url } = paymentLink;
-    paymentLinkOrigin = checkout_url;
-    const paymentLinkDialogUrl = `${checkout_url}?iframe=true&redirect_uri=${window.location.origin}&embedded=true`;
+    if (!paymentLinkResponse?.checkout_url) {
+      contentImporter.innerHTML = ERROR_UI;
+      return;
+    }
+
+    paymentLinkOrigin = paymentLinkResponse?.checkout_url;
+    const paymentLinkDialogUrl = `${paymentLinkResponse?.checkout_url}?iframe=true&redirect_uri=${window.location.origin}&embedded=true`;
 
     contentImporter.innerHTML = `
-      <iframe src="${paymentLinkDialogUrl}" style="height: 100%; width: 100%; border: none"  allow="clipboard-read; clipboard-write"/>
-    `;
+        <iframe src="${paymentLinkDialogUrl}" style="height: 100%; width: 100%; border: none"  allow="clipboard-read; clipboard-write"/>
+      `;
     window.addEventListener("message", handlePostMessage);
   } catch (error) {
     contentImporter.innerHTML = ERROR_UI;
