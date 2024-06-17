@@ -25,7 +25,7 @@ class WebhookTransaction
       if (json_last_error() !== JSON_ERROR_NONE) {
         return $response->withStatus(400);
       }
-
+      
       $request = $request->withParsedBody($contents);
       $body = $request->getParsedBody();
       if (!$payOS->verifyPaymentWebhookData($body)) {
@@ -41,7 +41,7 @@ class WebhookTransaction
         $response->getBody()->write('NOT FOUND ORDER');
         return $response->withStatus(400);
       }
-      if ($sapoStatusOrder['order']['financial_status'] === HARAVAN_ORDER_PAID_MESSAGE) {
+      if ($sapoStatusOrder['order']['financial_status'] === SAPO_ORDER_PAID_MESSAGE) {
         return $response;
       }
       $sapo->confirmOrder($orderCode);
