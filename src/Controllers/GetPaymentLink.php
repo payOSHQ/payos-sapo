@@ -71,12 +71,14 @@ class GetPaymentLink
         return $response
           ->withStatus(400);
       }
+      // remove special char
       $orderName = str_replace('#', '', $sapoOrder["order"]['name']);
-      $phone = str_replace('+', '', $sapoOrder["order"]['phone']);
+      // remove 3 char first in phone, add 0 in first string
+      $phone = "0" . substr($sapoOrder["order"]['phone'], 3);
       $data = [
         "orderCode" => (int) $orderId,
         "amount" => (int) $sapoOrder["order"]['total_price'],
-        "description" => $orderName . $phone,
+        "description" => $orderName . " " . $phone,
         "returnUrl" => $redirectUri,
         "cancelUrl" => $redirectUri
       ];
