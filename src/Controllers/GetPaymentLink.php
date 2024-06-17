@@ -66,16 +66,17 @@ class GetPaymentLink
     try {
       $queryParams = $request->getQueryParams();
       $redirectUri = $queryParams['redirect_uri'] ?? null;
-      $phone = $queryParams['phone'] ?? null;
-      if (empty($redirectUri) || empty($phone)) {
+      if (empty($redirectUri)) {
         $response->getBody()->write('INVALID DATA');
         return $response
           ->withStatus(400);
       }
+      $orderName = str_replace('#', '', $sapoOrder["order"]['name']);
+      $phone = str_replace('+', '', $sapoOrder["order"]['phone']);
       $data = [
         "orderCode" => (int) $orderId,
         "amount" => (int) $sapoOrder["order"]['total_price'],
-        "description" => "DH ". $phone,
+        "description" => $orderName . $phone,
         "returnUrl" => $redirectUri,
         "cancelUrl" => $redirectUri
       ];

@@ -73,7 +73,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   let paymentLinkOrigin = null;
   const orderId = Bizweb.order_id;
-  const phoneNumber = Bizweb.phone.replace("+", "");
   // all flow UI in this div
   const contentImporter = document.createElement("div");
   contentImporter.style.border = "1px solid #d9d9d9 ";
@@ -129,9 +128,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   try {
     const paymentLinkResponse = await handleFetchData(
-      `get-payment-link/${orderId}?redirect_uri=${window.location.origin}&phone=${phoneNumber}`
+      `get-payment-link/${orderId}?redirect_uri=${window.location.origin}`
     );
-    console.log(paymentLinkResponse);
     if (paymentLinkResponse?.financial_status === "paid") {
       contentImporter.innerHTML = SUCCESS_UI;
       return;
