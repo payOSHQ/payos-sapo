@@ -72,8 +72,8 @@ class GetPaymentLink
         return $response
           ->withStatus(400);
       }
-      // remove special char
-      $orderName = str_replace('#', '', $sapoOrder["order"]['name']);
+
+      $orderName = Util::convertOrderName($sapoOrder["order"]['name']);
       $phone = Util::convertPhoneNumber($sapoOrder["order"]['phone']);
       $data = [
         "orderCode" => (int) $orderId,
@@ -85,7 +85,7 @@ class GetPaymentLink
       $paymentLink = $payOS->createPaymentLink($data);
       $checkoutUrl = $paymentLink['checkoutUrl'];
       // update note in sapo
-      $sapo->updateNoteOrder($orderId, $checkoutUrl);
+      $sapo->updateNoteOrder($orderId, 'payOS checkoutUrl:' . $checkoutUrl);
 
       $response->getBody()
         ->write(json_encode([

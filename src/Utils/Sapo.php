@@ -62,7 +62,7 @@ class Sapo
 
     return json_decode($apiResponse, true);
   }
-  public function updateNoteOrder($orderId, $checkoutUrl)
+  public function updateNoteOrder($orderId, $note)
   {
     $options = [
       'http' => [
@@ -72,7 +72,7 @@ class Sapo
         'content' => json_encode([
           'order' => [
             'id' => $orderId,
-            'note' => 'payOS checkoutUrl: ' . $checkoutUrl
+            'note' => $note
           ]
         ])
       ]

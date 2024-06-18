@@ -25,4 +25,14 @@ class Util
     }
     return str_replace('+', '', $phoneNumber);
   }
+  public static function convertOrderName($orderName): string
+  {
+    if (!str_contains($orderName, '#')) {
+      return $orderName;
+    }
+    if (is_null($_ENV['PREFIX_ORDER'] ?? null)) {
+      return str_replace('#', '', $orderName);
+    }
+    return str_replace('#', $_ENV['PREFIX_ORDER'], $orderName);
+  }
 }
