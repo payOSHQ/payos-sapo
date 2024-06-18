@@ -83,9 +83,13 @@ class GetPaymentLink
         "cancelUrl" => $redirectUri
       ];
       $paymentLink = $payOS->createPaymentLink($data);
+      $checkoutUrl = $paymentLink['checkoutUrl'];
+      // update note in sapo
+      $sapo->updateNoteOrder($orderId, $checkoutUrl);
+
       $response->getBody()
         ->write(json_encode([
-          'checkout_url' => $paymentLink['checkoutUrl'],
+          'checkout_url' => $checkoutUrl,
           'financial_status' => $sapoOrder['order']['financial_status']
         ]));
       return $response;

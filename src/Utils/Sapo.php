@@ -62,4 +62,30 @@ class Sapo
 
     return json_decode($apiResponse, true);
   }
+  public function updateNoteOrder($orderId, $checkoutUrl)
+  {
+    $options = [
+      'http' => [
+        'header' => implode("\r\n", $this->headers),
+        'ignore_errors' => true,
+        'method' => 'PUT',
+        'content' => json_encode([
+          'order' => [
+            'id' => $orderId,
+            'note' => 'payOS checkoutUrl: ' . $checkoutUrl
+          ]
+        ])
+      ]
+    ];
+    $context = stream_context_create($options);
+    $apiResponse = file_get_contents($this->originUrl . '/admin/orders/' . $orderId . '.json', false, $context);
+    $http_response_header = $http_response_header ?? [];
+    $http_code = Util::getHttpCodeFromHeaders($http_response_header);
+
+    if ($http_code >= 400) {
+      throw new Exception($apiResponse . $http_code, $http_code);
+    }
+
+    return json_decode($apiResponse, true);
+  }
 }
