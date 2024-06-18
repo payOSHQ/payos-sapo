@@ -18,4 +18,11 @@ class Util
     }
     return 0; // Default to 0 if no status code found
   }
+  public static function convertPhoneNumber($phoneNumber): string
+  {
+    if (substr($phoneNumber, 0, 3) == '+84') {
+      $phoneNumber = '0' . substr($phoneNumber, 3);
+    }
+    return str_replace('+', '', $phoneNumber);
+  }
 }

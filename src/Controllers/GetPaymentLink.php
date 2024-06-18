@@ -8,6 +8,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Exception;
 use App\Utils\Sapo;
 use App\Utils\PayOSHandler;
+use App\Utils\Util;
 
 class GetPaymentLink
 {
@@ -73,8 +74,7 @@ class GetPaymentLink
       }
       // remove special char
       $orderName = str_replace('#', '', $sapoOrder["order"]['name']);
-      // remove 3 char first in phone, add 0 in first string
-      $phone = "0" . substr($sapoOrder["order"]['phone'], 3);
+      $phone = Util::convertPhoneNumber($sapoOrder["order"]['phone']);
       $data = [
         "orderCode" => (int) $orderId,
         "amount" => (int) $sapoOrder["order"]['total_price'],
