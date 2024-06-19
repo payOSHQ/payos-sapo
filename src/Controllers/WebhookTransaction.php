@@ -37,20 +37,20 @@ class WebhookTransaction
       }
       $data = $body['data'];
       $orderCode = $data['orderCode'];
-      $sapoStatusOrder = $sapo->getOrderById($orderCode);
-      if (!$sapoStatusOrder || !isset($sapoStatusOrder['order'])) {
+      $sapoOrder = $sapo->getOrderById($orderCode);
+      if (!$sapoOrder || !isset($sapoOrder['order'])) {
         $response->getBody()->write('NOT FOUND ORDER');
         return $response->withStatus(400);
       }
-      if ($sapoStatusOrder['order']['financial_status'] === SAPO_ORDER_PAID_MESSAGE) {
+      if ($sapoOrder['order']['financial_status'] === SAPO_ORDER_PAID_MESSAGE) {
         return $response;
       }
       // confirm order
       $sapo->confirmOrder($orderCode);
+
       // update note
-      $payOSCheckoutUrl = 'payOS checkoutUrl: ' . $_ENV['CHECKOUT_URL_HOST'] . '/web/' . $data['paymentLinkId'];
       $tranNote = '  ^^ Số dư tài khoản vừa tăng ' . $data['amount'] . 'VND vào ' . $data['transactionDateTime'] . ' Mô tả ' . $data['description'] . ' Mã tham chiếu ' . $data['reference'] . ' Số tài khoản ' . $data['accountNumber'];
-      $sapo->updateNoteOrder($orderCode, $payOSCheckoutUrl . $tranNote);
+      $sapo->updateNoteOrder($orderCode, $sapoOrder['order']['note'] . $tranNote);
 
       return $response;
     } catch (Exception $e) {

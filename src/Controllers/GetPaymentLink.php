@@ -85,7 +85,7 @@ class GetPaymentLink
       $paymentLink = $payOS->createPaymentLink($data);
       $checkoutUrl = $paymentLink['checkoutUrl'];
       // update note in sapo
-      $sapo->updateNoteOrder($orderId, 'payOS checkoutUrl:' . $checkoutUrl);
+      $sapo->updateNoteOrder($orderId, $sapoOrder['order']['note'] . ' payOS checkoutUrl:' . $checkoutUrl);
 
       $response->getBody()
         ->write(json_encode([
