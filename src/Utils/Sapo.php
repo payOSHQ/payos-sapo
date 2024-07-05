@@ -37,7 +37,7 @@ class Sapo
 
     return json_decode($apiResponse, true);
   }
-  public function confirmOrder($orderId)
+  public function confirmOrder($orderId, $reference)
   {
     $options = [
       'http' => [
@@ -47,6 +47,9 @@ class Sapo
         'content' => json_encode([
           'transaction' => [
             'kind' => 'capture',
+            'payment_details' => [
+              'reference' => $reference
+            ]
           ]
         ])
       ]

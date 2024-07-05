@@ -46,7 +46,7 @@ class WebhookTransaction
         return $response;
       }
       // confirm order
-      $sapo->confirmOrder($orderCode);
+      $sapo->confirmOrder($orderCode, $data['reference']);
 
       // update note
       $tranNote = '  ^^^^^^^ Số dư tài khoản vừa tăng ' . $data['amount'] . 'VND vào ' . $data['transactionDateTime'] . ' Mô tả ' . $data['description'] . ' Mã tham chiếu ' . $data['reference'] . ' Số tài khoản ' . $data['accountNumber'];
