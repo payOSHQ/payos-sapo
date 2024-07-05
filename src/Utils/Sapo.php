@@ -48,7 +48,8 @@ class Sapo
           'transaction' => [
             'kind' => 'capture',
             'payment_details' => [
-              'reference' => $reference
+              'reference' => $reference,
+              'transactionInfo' => $reference
             ]
           ]
         ])
