@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Controllers;
@@ -37,7 +38,6 @@ class GetPaymentLink
         ]));
         return $response;
       }
-
     } catch (Exception $e) {
       $statusCode = $e->getCode() ?: 500;
       $response->getBody()->write(json_encode(['error' => $e->getMessage()]));
@@ -84,8 +84,9 @@ class GetPaymentLink
       ];
       $paymentLink = $payOS->createPaymentLink($data);
       $checkoutUrl = $paymentLink['checkoutUrl'];
-      // update note in sapo
-      $sapo->updateNoteOrder($orderId, $sapoOrder['order']['note'] . ' ^^^^^^^ payOS checkoutUrl:' . $checkoutUrl);
+
+      // create new metafield in sapo
+      $sapo->createOrderMetafield($orderId, $checkoutUrl, 'url', 'checkout_url');
 
       $response->getBody()
         ->write(json_encode([

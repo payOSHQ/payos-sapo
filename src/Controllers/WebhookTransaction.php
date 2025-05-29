@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Controllers;
@@ -47,10 +48,18 @@ class WebhookTransaction
       }
       // confirm order
       $sapo->confirmOrder($orderCode, $data['reference']);
+      $metafieldValue = 'Số dư tài khoản vừa tăng ' . $data['amount'] . $data['currency'] . "\n" .
+        'Thời gian: ' . $data['transactionDateTime'] . "\n" .
+        'Mô tả: ' . $data['description'] . "\n" .
+        'Mã tham chiếu: ' . $data['reference'] . "\n" .
+        'Số tài khoản: ' . $data['accountNumber'];
 
-      // update note
-      $tranNote = '  ^^^^^^^ Số dư tài khoản vừa tăng ' . $data['amount'] . 'VND vào ' . $data['transactionDateTime'] . ' Mô tả ' . $data['description'] . ' Mã tham chiếu ' . $data['reference'] . ' Số tài khoản ' . $data['accountNumber'];
-      $sapo->updateNoteOrder($orderCode, $sapoOrder['order']['note'] . $tranNote);
+      $sapo->createOrderMetafield(
+        strval($sapoOrder['order']['id']),
+        $metafieldValue,
+        'multi_line_text_field',
+        'transaction'
+      );
 
       return $response;
     } catch (Exception $e) {

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Utils;
@@ -90,6 +91,34 @@ class Sapo
       throw new Exception($apiResponse . $http_code, $http_code);
     }
 
+    return json_decode($apiResponse, true);
+  }
+
+  public function createOrderMetafield($orderId, $value, $valueType, $metafieldKey, $metafieldNamespace = "payos")
+  {
+    $options = [
+      'http' => [
+        'header' => implode("\r\n", $this->headers),
+        'ignore_error' => true,
+        'method' => 'POST',
+        'content' => json_encode([
+          'metafield' => [
+            'namespace' => $metafieldNamespace,
+            'key' => $metafieldKey,
+            'value' => $value,
+            'value_type' => $valueType
+          ]
+        ])
+      ]
+    ];
+    $context = stream_context_create($options);
+    $apiResponse = file_get_contents($this->originUrl . '/admin/orders/' . $orderId . '/metafields.json', false, $context);
+    $http_response_header = $http_response_header ?? [];
+    $http_code = Util::getHttpCodeFromHeaders($http_response_header);
+
+    if ($http_code >= 400) {
+      throw new Exception($apiResponse . $http_code, $http_code);
+    }
     return json_decode($apiResponse, true);
   }
 }
