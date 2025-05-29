@@ -15,12 +15,13 @@ composer install
 
 ```
 
-- Go to path "/admin/settings/metafields/order" add add 2 metafields (only if you need to show this information in order page):
+- Go to path "/admin/settings/metafields/order" add add follow metafield (only if you need to show this information in order page):
 
-| Name               | Type                  | Namespace and Key  |
-| ------------------ | --------------------- | ------------------ |
-| payOS checkout URL | URL                   | payos.checkout_url |
-| payOS transaction  | Multi line text field | payos.transaction  |
+| Name               | Type               | Namespace and Key         |
+| ------------------ | ------------------ | ------------------------- |
+| Ghi chú thanh toán | Văn bản nhiều dòng | custom.Ghi_chu_thanh_toan |
+
+> Note: You can also change metafield properties to suitable for your purpose.
 
 # RUN APP LOCAL
 

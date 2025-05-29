@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Utils;
 
 class Util
@@ -28,5 +29,14 @@ class Util
   public static function convertOrderName($orderName): string
   {
     return ($_ENV['PREFIX_ORDER'] ?? '') . preg_replace('/[^A-Za-z0-9]/', '', $orderName);
+  }
+  public static function findMetafield(array $metafields, $namespace, $key, $valueType)
+  {
+    foreach ($metafields as $metafield) {
+      if ($metafield['namespace'] === $namespace && $metafield['key'] === $key && $metafield['value_type'] === $valueType) {
+        return $metafield;
+      }
+    }
+    return null;
   }
 }

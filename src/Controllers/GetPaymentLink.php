@@ -85,8 +85,15 @@ class GetPaymentLink
       $paymentLink = $payOS->createPaymentLink($data);
       $checkoutUrl = $paymentLink['checkoutUrl'];
 
-      // create new metafield in sapo
-      $sapo->createOrderMetafield($orderId, $checkoutUrl, 'url', 'checkout_url');
+      //update metafield
+      $orderMetafields = $sapo->getOrderMetafield($orderId);
+      $updateMetafieldValue = 'payOS checkout URL: ' . $checkoutUrl . "\n";
+      $metafield = Util::findMetafield($orderMetafields['metafields'], 'custom', 'Ghi_chu_thanh_toan', 'multi_line_text_field');
+      if (!$metafield) {
+        $sapo->createOrderMetafield($orderId, $updateMetafieldValue, 'multi_line_text_field', 'Ghi_chu_thanh_toan', 'custom');
+      } else {
+        $sapo->updateOrderMetafield($orderId, $metafield['id'], $metafield['value'] . "\n" . $updateMetafieldValue, 'multi_line_text_field');
+      }
 
       $response->getBody()
         ->write(json_encode([

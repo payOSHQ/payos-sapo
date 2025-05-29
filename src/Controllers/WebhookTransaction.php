@@ -8,6 +8,7 @@ use App\Utils\PayOSHandler;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use App\Utils\Sapo;
+use App\Utils\Util;
 use Exception;
 
 class WebhookTransaction
@@ -48,18 +49,21 @@ class WebhookTransaction
       }
       // confirm order
       $sapo->confirmOrder($orderCode, $data['reference']);
-      $metafieldValue = 'Số dư tài khoản vừa tăng ' . $data['amount'] . $data['currency'] . "\n" .
+
+      // update metafield
+      $orderMetafields = $sapo->getOrderMetafield(strval($sapoOrder['order']['id']));
+      $updateMetafieldValue = "-------------\nSố dư tài khoản vừa tăng " . $data['amount'] . $data['currency'] . "\n" .
         'Thời gian: ' . $data['transactionDateTime'] . "\n" .
         'Mô tả: ' . $data['description'] . "\n" .
         'Mã tham chiếu: ' . $data['reference'] . "\n" .
-        'Số tài khoản: ' . $data['accountNumber'];
+        'Số tài khoản: ' . $data['accountNumber'] / "\n-------------\n";
 
-      $sapo->createOrderMetafield(
-        strval($sapoOrder['order']['id']),
-        $metafieldValue,
-        'multi_line_text_field',
-        'transaction'
-      );
+      $metafield = Util::findMetafield($orderMetafields['metafields'], 'custom', 'Ghi_chu_thanh_toan', 'multi_line_text_field');
+      if (!$metafield) {
+        $sapo->createOrderMetafield(strval($sapoOrder['order']['id']), $updateMetafieldValue, 'multi_line_text_field', 'Ghi_chu_thanh_toan', 'custom');
+      } else {
+        $sapo->updateOrderMetafield(strval($sapoOrder['order']['id']), $metafield['id'], $metafield['value'] . "\n" . $updateMetafieldValue, 'multi_line_text_field');
+      }
 
       return $response;
     } catch (Exception $e) {

@@ -94,6 +94,53 @@ class Sapo
     return json_decode($apiResponse, true);
   }
 
+  public function getOrderMetafield($orderId)
+  {
+    $options = [
+      'http' => [
+        'header' => implode("\r\n", $this->headers),
+        'ignore_error' => true,
+        'method' => 'GET',
+      ]
+    ];
+    $context = stream_context_create($options);
+    $apiResponse = file_get_contents($this->originUrl . '/admin/orders/' . $orderId . '/metafields.json', false, $context);
+    $http_response_header = $http_response_header ?? [];
+    $http_code = Util::getHttpCodeFromHeaders($http_response_header);
+
+    if ($http_code >= 400) {
+      throw new Exception($apiResponse . $http_code, $http_code);
+    }
+    return json_decode($apiResponse, true);
+  }
+
+  public function updateOrderMetafield($orderId, $metafieldId, $value, $valueType)
+  {
+    $options = [
+      'http' => [
+        'header' => implode("\r\n", $this->headers),
+        'ignore_error' => true,
+        'method' => 'PUT',
+        'content' => json_encode([
+          'metafield' => [
+            'id' => $metafieldId,
+            'value' => $value,
+            'value_type' => $valueType
+          ]
+        ])
+      ]
+    ];
+    $context = stream_context_create($options);
+    $apiResponse = file_get_contents($this->originUrl . '/admin/orders/' . $orderId . '/metafields/' . $metafieldId . '.json', false, $context);
+    $http_response_header = $http_response_header ?? [];
+    $http_code = Util::getHttpCodeFromHeaders($http_response_header);
+
+    if ($http_code >= 400) {
+      throw new Exception($apiResponse . $http_code, $http_code);
+    }
+    return json_decode($apiResponse, true);
+  }
+
   public function createOrderMetafield($orderId, $value, $valueType, $metafieldKey, $metafieldNamespace = "payos")
   {
     $options = [
