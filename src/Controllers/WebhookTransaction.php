@@ -56,7 +56,7 @@ class WebhookTransaction
         'Thời gian: ' . $data['transactionDateTime'] . "\n" .
         'Mô tả: ' . $data['description'] . "\n" .
         'Mã tham chiếu: ' . $data['reference'] . "\n" .
-        'Số tài khoản: ' . $data['accountNumber'] / "\n-------------\n";
+        'Số tài khoản: ' . $data['accountNumber'] . "\n-------------\n";
 
       $metafield = Util::findMetafield($orderMetafields['metafields'], 'custom', 'Ghi_chu_thanh_toan', 'multi_line_text_field');
       if (!$metafield) {
